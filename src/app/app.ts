@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
 import {Header} from './shared/layout/header/header';
 import {Hero} from './shared/ui/hero/hero';
+import {SearchForm} from './feature/search-form/search-form';
+import {SearchStats} from './feature/search-stats/search-stats';
 
 @Component({
   selector: 'app-root',
@@ -16,5 +16,4 @@ import {Hero} from './shared/ui/hero/hero';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('axenix-frontend');
 }

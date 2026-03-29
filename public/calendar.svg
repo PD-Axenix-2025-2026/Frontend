@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+  <!-- Calendar body with black border -->
+  <rect x="8" y="18" width="80" height="74" rx="6" ry="6" fill="#fff" stroke="#FF5C00" stroke-width="4"/>
+
+  <!-- Header bar -->
+  <rect x="8" y="18" width="80" height="22" rx="6" ry="6" fill="#FF5C00"/>
+  <rect x="8" y="30" width="80" height="10" fill="#FF5C00"/>
+
+  <!-- Ring left -->
+  <rect x="26" y="9" width="12" height="20" rx="4" ry="4" fill="#FF5C00"/>
+  <rect x="28" y="10" width="8" height="18" rx="4" ry="4" fill="#000"/>
+
+  <!-- Ring right -->
+  <rect x="62" y="9" width="12" height="20" rx="4" ry="4" fill="#FF5C00"/>
+  <rect x="64" y="10" width="8" height="18" rx="4" ry="4" fill="#000"/>
+
+
+  <rect x="18" y="48" width="10" height="8" rx="2" fill="#FF5C00"/>
+  <rect x="34" y="48" width="10" height="8" rx="2" fill="#FF5C00"/>
+  <rect x="50" y="48" width="10" height="8" rx="2" fill="#FF5C00"/>
+  <rect x="66" y="48" width="10" height="8" rx="2" fill="#000"/>
+
+  <rect x="18" y="62" width="10" height="8" rx="2" fill="#000"/>
+  <rect x="34" y="62" width="10" height="8" rx="2" fill="#000"/>
+  <rect x="50" y="62" width="10" height="8" rx="2" fill="#000"/>
+  <rect x="66" y="62" width="10" height="8" rx="2" fill="#000"/>
+
+  <rect x="18" y="76" width="10" height="8" rx="2" fill="#000"/>
+  <rect x="34" y="76" width="10" height="8" rx="2" fill="#000"/>
+  <rect x="50" y="76" width="10" height="8" rx="2" fill="#000"/>
+</svg>

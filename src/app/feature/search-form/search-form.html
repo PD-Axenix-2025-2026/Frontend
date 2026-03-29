@@ -1,0 +1,18 @@
+<div class="search-block">
+  <form class="search-form">
+    <p-floatlabel class="search-field" variant="on">
+      <label for="from">• Откуда</label>
+      <p-autoComplete inputId="from" [pt]="fromPt"></p-autoComplete>
+    </p-floatlabel>
+    <p-floatlabel class="search-field" variant="on">
+      <label for="to">• Куда</label>
+      <p-autoComplete inputId="to" [pt]="toPt"></p-autoComplete>
+    </p-floatlabel>
+    <p-floatlabel class="search-field search-field--date" variant="on">
+      <label for="date">
+        <img ngSrc="calendar.svg" alt="" height="18" width="18"> Дата</label>
+      <p-datePicker style="display: flex; align-items: center" inputId="date" [pt]="datePt" showIcon iconDisplay="input" dateFormat="dd.mm.yy"></p-datePicker>
+    </p-floatlabel>
+    <p-button label="НАЙТИ →" [pt]="buttonPt"></p-button>
+  </form>
+</div>
