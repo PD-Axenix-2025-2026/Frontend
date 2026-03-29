@@ -1,0 +1,38 @@
+.app-header {
+  padding: 0 40px;
+  background-color: var(--black);
+  color: white;
+  border-bottom: var(--border) 1px solid;
+}
+
+.header-nav {
+  min-height: 64px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-nav__links {
+  color: var(--muted);
+  display: flex;
+  gap: 32px;
+  a {
+    letter-spacing: 2px;
+    font-size: 16px;
+  }
+  a:not(.header-link-active):hover {
+    color: var(--orange);
+    transition: 0.75s;
+  }
+}
+
+.header-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 3px;
+}
+
+.header-link-active {
+  color: white;
+}
