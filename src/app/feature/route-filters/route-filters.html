@@ -1,0 +1,60 @@
+<aside class="route-filters">
+  <h3 class="route-filters__title">ФИЛЬТРЫ</h3>
+  <section class="route-filters__section">
+    <div class="route-filters__section-title">Транспорт</div>
+    <div class="route-filters__options">
+      @for (option of transportOptions; track option.id) {
+        <label class="route-filters__option">
+          <p-checkbox [(ngModel)]="option.checked" [binary]="true" [pt]="checkboxPt" />
+          <span class="route-filters__option-label">{{ option.icon }} {{ option.label }}</span>
+          <span class="route-filters__count">{{ option.count }}</span>
+        </label>
+      }
+    </div>
+  </section>
+  <section class="route-filters__section">
+    <div class="route-filters__section-title">Пересадки</div>
+    <div class="route-filters__options">
+      @for (option of stopOptions; track option.id) {
+        <label class="route-filters__option">
+          <p-checkbox [(ngModel)]="option.checked" [binary]="true" [pt]="checkboxPt" />
+          <span class="route-filters__option-label">{{ option.label }}</span>
+          <span class="route-filters__count">{{ option.count }}</span>
+        </label>
+      }
+    </div>
+  </section>
+  <section class="route-filters__section">
+    <div class="route-filters__section-title">Стоимость</div>
+    <div class="route-filters__price-inputs">
+      <p-inputNumber
+        [ngModel]="rangeValues[0]"
+        (ngModelChange)="updateRangeValue(0, $event)"
+        [min]="2400"
+        [max]="rangeValues[1]"
+        suffix=" ₽"
+        [useGrouping]="true"
+        [pt]="priceInputPt" />
+      <p-inputNumber
+        [ngModel]="rangeValues[1]"
+        (ngModelChange)="updateRangeValue(1, $event)"
+        [min]="rangeValues[0]"
+        [max]="15000"
+        suffix=" ₽"
+        [useGrouping]="true"
+        [pt]="priceInputPt" />
+    </div>
+    <p-slider [(ngModel)]="rangeValues" [range]="true" [min]="2400" [max]="15000" [pt]="sliderPt" />
+  </section>
+  <section class="route-filters__section">
+    <div class="route-filters__section-title">Время отправления</div>
+    <div class="route-filters__options">
+      @for (option of departureOptions; track option.id) {
+        <label class="route-filters__option">
+          <p-checkbox [(ngModel)]="option.checked" [binary]="true" [pt]="checkboxPt" />
+          <span class="route-filters__option-label">{{ option.label }}</span>
+        </label>
+      }
+    </div>
+  </section>
+</aside>

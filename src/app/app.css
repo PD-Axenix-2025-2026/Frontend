@@ -1,0 +1,16 @@
+.search-page-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+}
+
+.search-page-sidebar {
+  min-width: 0;
+}
+
+.search-page-results {
+  min-width: 0;
+}
