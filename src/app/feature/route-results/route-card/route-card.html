@@ -1,0 +1,48 @@
+<article class="route-card" [class.route-card--best]="item().isBest">
+  @if (item().badge) {
+    <div class="route-card__badge">{{ item().badge }}</div>
+  }
+
+  <div class="route-card__top">
+    <div class="route-card__city">
+      <div class="route-card__time">{{ item().departureTime }}</div>
+      <div class="route-card__place">{{ item().departurePlace }}</div>
+    </div>
+
+    <div class="route-card__line">
+      <div class="route-card__duration">{{ item().duration }}</div>
+      <div class="route-card__track">
+        <div class="route-card__track-fill"></div>
+      </div>
+      <div class="route-card__stops">{{ item().stops }}</div>
+    </div>
+
+    <div class="route-card__city route-card__city--to">
+      <div class="route-card__time">{{ item().arrivalTime }}</div>
+      <div class="route-card__place">{{ item().arrivalPlace }}</div>
+    </div>
+
+    <div class="route-card__price">
+      <div class="route-card__price-value">{{ item().price }}</div>
+      <div class="route-card__price-label">{{ item().priceLabel }}</div>
+    </div>
+  </div>
+
+  <div class="route-card__segments">
+    @for (segment of item().segments; track segment.id) {
+      <div class="route-card__segment">
+        <span class="route-card__segment-icon">{{ segment.icon }}</span>
+        <div class="route-card__segment-info">
+          <div class="route-card__segment-route">{{ segment.route }}</div>
+          <div class="route-card__segment-detail">{{ segment.detail }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="route-card__bottom">
+    <button type="button" class="route-card__button">
+      ВЫБРАТЬ
+    </button>
+  </div>
+</article>

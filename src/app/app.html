@@ -10,5 +10,8 @@
 
   <section class="search-page-results">
     <app-results-toolbar></app-results-toolbar>
+    @for (item of routeCards(); track item.id) {
+      <app-route-card [item]="item"></app-route-card>
+    }
   </section>
 </div>
