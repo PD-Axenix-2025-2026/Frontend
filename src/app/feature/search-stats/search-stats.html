@@ -1,0 +1,10 @@
+<div class="stats-container">
+  <div class="stats-row">
+    @for (item of stats(); track item.id) {
+      <article class="stat-card">
+        <div class="stat-value">{{ item.value }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </article>
+    }
+  </div>
+</div>
