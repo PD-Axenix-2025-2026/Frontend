@@ -1,0 +1,25 @@
+<div class="results-toolbar">
+  <div class="results-toolbar__meta">
+    Найдено <b>247</b> маршрутов · показано 1-5
+  </div>
+
+  <div class="results-toolbar__sorts">
+    @for (option of sortOptions; track option.id) {
+      <button
+        type="button"
+        class="results-toolbar__sort-button"
+        [class.results-toolbar__sort-button--active]="activeSort() === option.id"
+        (click)="selectSort(option.id)">
+        <span class="results-toolbar__sort-icon">{{ option.icon }}</span>
+        <span>{{ option.label }}</span>
+        <span class="results-toolbar__sort-arrow">
+          @if (activeSort() === option.id) {
+            ↑
+          } @else {
+            ↕
+          }
+        </span>
+      </button>
+    }
+  </div>
+</div>

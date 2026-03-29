@@ -4,6 +4,7 @@ import {Hero} from './shared/ui/hero/hero';
 import {SearchForm} from './feature/search-form/search-form';
 import {SearchStats} from './feature/search-stats/search-stats';
 import {RouteFilters} from './feature/route-filters/route-filters';
+import {ResultsToolbar} from './feature/route-results/results-toolbar/results-toolbar';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import {RouteFilters} from './feature/route-filters/route-filters';
     Hero,
     SearchForm,
     SearchStats,
-    RouteFilters
+    RouteFilters,
+    ResultsToolbar
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
