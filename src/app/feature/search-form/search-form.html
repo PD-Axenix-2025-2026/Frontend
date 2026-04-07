@@ -1,18 +1,45 @@
 <div class="search-block">
-  <form class="search-form">
+  <form class="search-form" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
     <p-floatlabel class="search-field" variant="on">
       <label for="from">• Откуда</label>
-      <p-autoComplete inputId="from" [pt]="fromPt"></p-autoComplete>
+      <p-autoComplete
+        formControlName="origin"
+        inputId="from" [pt]="fromPt"
+        [suggestions]="originSuggestions"
+        optionLabel="label"
+        [forceSelection]="true"
+        (completeMethod)="searchOrigins($event)"
+        [delay]="300"
+      ></p-autoComplete>
     </p-floatlabel>
     <p-floatlabel class="search-field" variant="on">
       <label for="to">• Куда</label>
-      <p-autoComplete inputId="to" [pt]="toPt"></p-autoComplete>
+      <p-autoComplete
+        formControlName="destination"
+        inputId="to"
+        [pt]="toPt"
+        [suggestions]="destinationSuggestions"
+        optionLabel="label"
+        [forceSelection]="true"
+        (completeMethod)="searchDestinations($event)"
+        [delay]="300"
+      ></p-autoComplete>
     </p-floatlabel>
     <p-floatlabel class="search-field search-field--date" variant="on">
       <label for="date">
         <img ngSrc="calendar.svg" alt="" height="18" width="18"> Дата</label>
-      <p-datePicker style="display: flex; align-items: center" inputId="date" [pt]="datePt" showIcon iconDisplay="input" dateFormat="dd.mm.yy"></p-datePicker>
+      <p-datePicker
+        formControlName="date"
+        inputId="date"
+        [pt]="datePt"
+        showIcon
+        iconDisplay="input"
+        dateFormat="dd.mm.yy"
+        pInputMask="99.99.9999"
+        [minDate]="minDate"
+        [showButtonBar]="true"
+      ></p-datePicker>
     </p-floatlabel>
-    <p-button label="НАЙТИ →" [pt]="buttonPt"></p-button>
+    <p-button label="НАЙТИ →" [pt]="buttonPt" [disabled]="!searchForm.valid" type="submit"></p-button>
   </form>
 </div>

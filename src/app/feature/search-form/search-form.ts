@@ -1,9 +1,26 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import {AutoComplete} from 'primeng/autocomplete';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import {Button} from 'primeng/button';
 import {FloatLabel} from 'primeng/floatlabel';
 import {DatePicker} from 'primeng/datepicker';
 import {NgOptimizedImage} from '@angular/common';
+import { SearchesApiService } from '../../core/api/searches.api';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  MaxLengthValidator, ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { LocationsApiService } from '../../core/api/locations.api';
+import { InputMaskDirective } from 'primeng/inputmask';
+import {
+  LocationAutocompleteItem,
+  LocationType,
+  SearchCreateRequest,
+} from '../../core/api/api.types';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-search-form',
@@ -12,13 +29,98 @@ import {NgOptimizedImage} from '@angular/common';
     Button,
     FloatLabel,
     DatePicker,
-    NgOptimizedImage
+    NgOptimizedImage,
+    InputMaskDirective,
+    ReactiveFormsModule,
   ],
   templateUrl: './search-form.html',
   styleUrl: './search-form.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class SearchForm {
+export class SearchForm implements OnInit {
+  private readonly locationApi = inject(LocationsApiService);
+  private readonly fb = inject(FormBuilder);
+  public searchForm: FormGroup;
+
+  public minDate: Date | undefined;
+  public originSuggestions: LocationAutocompleteItem[] = [];
+  public destinationSuggestions: LocationAutocompleteItem[] = [];
+
+  constructor() {
+    this.searchForm = this.fb.group({
+      origin: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
+      destination: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
+      date: new FormControl<Date | null>(null, [Validators.required]),
+    });
+  }
+
+  ngOnInit() {
+    this.minDate = new Date();
+  }
+
+  searchOrigins(event: AutoCompleteCompleteEvent) {
+    this.loadSuggestions(event.query, (items) => {
+      this.originSuggestions = items;
+    });
+  }
+
+  searchDestinations(event: AutoCompleteCompleteEvent) {
+    this.loadSuggestions(event.query, (items) => {
+      this.destinationSuggestions = items;
+    });
+  }
+
+  onSubmit() {
+    if (this.searchForm.invalid) {
+      this.searchForm.markAsTouched();
+      return;
+    }
+
+    const { origin, destination, date } = this.searchForm.getRawValue();
+
+    if (!origin || !destination || !date) return;
+
+    const payload: SearchCreateRequest = {
+      origin: {
+        id: origin.id,
+        type: origin.type,
+      },
+      destination: {
+        id: destination.id,
+        type: destination.type,
+      },
+      date: this.toIsoDate(date),
+    };
+    console.log(payload);
+  }
+
+  private loadSuggestions(query: string, apply: (items: LocationAutocompleteItem[]) => void): void {
+    const normalized = query.trim();
+
+    if (normalized.length < 2) {
+      apply([]);
+      return;
+    }
+
+    this.locationApi
+      .listLocations({
+        prefix: normalized,
+        types: ['city'],
+        limit: 10,
+      }).subscribe({
+        next: (response) => apply(response.items),
+        error: () => apply([]),
+      });
+  }
+
+  private toIsoDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
   protected readonly fromPt = {
     root: { class: 'search-control' },
     pcInputText: {
@@ -28,6 +130,7 @@ export class SearchForm {
       },
     },
     overlay: { class: 'search-control__overlay' },
+    loader: { class: 'search-control__loader' },
   };
 
   protected readonly toPt = {
@@ -39,6 +142,7 @@ export class SearchForm {
       },
     },
     overlay: { class: 'search-control__overlay' },
+    loader: { class: 'search-control__loader' },
   };
 
   protected readonly datePt = {
