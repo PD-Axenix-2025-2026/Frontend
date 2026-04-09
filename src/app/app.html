@@ -1,6 +1,6 @@
 <app-header />
 <app-hero />
-<app-search-form />
+<app-search-form (searchSubmitted)="onSearchSubmitted($event)"/>
 <app-search-stats/>
 
 <div class="search-page-main">

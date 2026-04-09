@@ -1,26 +1,25 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, output, ViewEncapsulation } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { catchError, debounceTime, distinctUntilChanged, map, of, Subject, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import {Button} from 'primeng/button';
 import {FloatLabel} from 'primeng/floatlabel';
 import {DatePicker} from 'primeng/datepicker';
-import {NgOptimizedImage} from '@angular/common';
-import { SearchesApiService } from '../../core/api/searches.api';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  MaxLengthValidator, ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { LocationsApiService } from '../../core/api/locations.api';
 import { InputMaskDirective } from 'primeng/inputmask';
+import { LocationsApiService } from '../../core/api';
 import {
   LocationAutocompleteItem,
-  LocationType,
   SearchCreateRequest,
-} from '../../core/api/api.types';
-import { debounceTime } from 'rxjs';
+} from '../../core/api';
+import { differentLocationsValidator } from './search-form.validators';
 
 @Component({
   selector: 'app-search-form',
@@ -38,41 +37,55 @@ import { debounceTime } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchForm implements OnInit {
+  readonly searchSubmitted = output<SearchCreateRequest>();
+
   private readonly locationApi = inject(LocationsApiService);
   private readonly fb = inject(FormBuilder);
-  public searchForm: FormGroup;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly originQuery$ = new Subject<string>();
+  private readonly destinationQuery$ = new Subject<string>();
 
+  public searchForm: FormGroup;
   public minDate: Date | undefined;
   public originSuggestions: LocationAutocompleteItem[] = [];
   public destinationSuggestions: LocationAutocompleteItem[] = [];
 
   constructor() {
-    this.searchForm = this.fb.group({
-      origin: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
-      destination: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
-      date: new FormControl<Date | null>(null, [Validators.required]),
-    });
+    this.searchForm = this.fb.group(
+      {
+        origin: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
+        destination: new FormControl<LocationAutocompleteItem | null>(null, [Validators.required]),
+        date: new FormControl<Date | null>(null, [Validators.required]),
+      },
+      {
+        validators: [differentLocationsValidator()],
+      },
+    );
   }
 
   ngOnInit() {
     this.minDate = new Date();
-  }
 
-  searchOrigins(event: AutoCompleteCompleteEvent) {
-    this.loadSuggestions(event.query, (items) => {
+    this.bindSuggestions(this.originQuery$, items => {
       this.originSuggestions = items;
     });
-  }
 
-  searchDestinations(event: AutoCompleteCompleteEvent) {
-    this.loadSuggestions(event.query, (items) => {
+    this.bindSuggestions(this.destinationQuery$, (items) => {
       this.destinationSuggestions = items;
     });
   }
 
+  searchOrigins(event: AutoCompleteCompleteEvent) {
+      this.originQuery$.next(event.query);
+  }
+
+  searchDestinations(event: AutoCompleteCompleteEvent) {
+      this.destinationQuery$.next(event.query);
+  }
+
   onSubmit() {
     if (this.searchForm.invalid) {
-      this.searchForm.markAsTouched();
+      this.searchForm.markAllAsTouched();
       return;
     }
 
@@ -91,26 +104,32 @@ export class SearchForm implements OnInit {
       },
       date: this.toIsoDate(date),
     };
-    console.log(payload);
+    this.searchSubmitted.emit(payload);
   }
 
-  private loadSuggestions(query: string, apply: (items: LocationAutocompleteItem[]) => void): void {
-    const normalized = query.trim();
-
-    if (normalized.length < 2) {
-      apply([]);
-      return;
-    }
-
-    this.locationApi
-      .listLocations({
-        prefix: normalized,
-        types: ['city'],
-        limit: 10,
-      }).subscribe({
-        next: (response) => apply(response.items),
-        error: () => apply([]),
-      });
+  private bindSuggestions(
+    query$: Subject<string>,
+    apply: (items: LocationAutocompleteItem[]) => void
+  ): void {
+    query$.pipe(
+      map(query => query.trim()),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (query.length < 2) {
+          return of([])
+        }
+        return this.locationApi.listLocations({
+          prefix: query,
+          types: ["city"],
+          limit: 10
+        }).pipe(
+          map(response => response.items),
+          catchError(() => of([]))
+        )
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(locations => { apply(locations) })
   }
 
   private toIsoDate(date: Date): string {
@@ -119,6 +138,17 @@ export class SearchForm implements OnInit {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  protected hasFormError(errorKey: string): boolean {
+    return (
+      !!this.searchForm.errors?.[errorKey] && (this.searchForm.touched || this.searchForm.dirty)
+    );
+  }
+
+  protected isInvalid(controlName: 'origin' | 'destination' | 'date'): boolean {
+    const control = this.searchForm.get(controlName);
+    return !!control && control.invalid && (control.touched || control.dirty);
   }
 
   protected readonly fromPt = {

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {Header} from './shared/layout/header/header';
 import {Hero} from './shared/ui/hero/hero';
 import {SearchForm} from './feature/search-form/search-form';
@@ -6,6 +6,8 @@ import {SearchStats} from './feature/search-stats/search-stats';
 import {RouteFilters} from './feature/route-filters/route-filters';
 import {ResultsToolbar} from './feature/route-results/results-toolbar/results-toolbar';
 import {RouteCard, RouteCardItem} from './feature/route-results/route-card/route-card';
+import { SearchesApiService } from './core/api';
+import { SearchCreateRequest } from './core/api';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +24,13 @@ import {RouteCard, RouteCardItem} from './feature/route-results/route-card/route
   styleUrl: './app.css'
 })
 export class App {
+
+  private readonly searchApi = inject(SearchesApiService);
+
+  onSearchSubmitted(payload: SearchCreateRequest) {
+    this.searchApi.createSearch(payload).subscribe();
+  }
+
   protected readonly routeCards = signal<RouteCardItem[]>([
     {
       id: 'route-1',

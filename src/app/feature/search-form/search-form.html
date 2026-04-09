@@ -9,8 +9,13 @@
         optionLabel="label"
         [forceSelection]="true"
         (completeMethod)="searchOrigins($event)"
-        [delay]="300"
+        emptyMessage="Ничего не найдено"
       ></p-autoComplete>
+      <div class="search-field__messages">
+        @if (isInvalid('origin')) {
+          <small class="search-field__error">Выберите пункт отправления из списка</small>
+        }
+      </div>
     </p-floatlabel>
     <p-floatlabel class="search-field" variant="on">
       <label for="to">• Куда</label>
@@ -22,8 +27,13 @@
         optionLabel="label"
         [forceSelection]="true"
         (completeMethod)="searchDestinations($event)"
-        [delay]="300"
+        emptyMessage="Ничего не найдено"
       ></p-autoComplete>
+      <div class="search-field__messages">
+        @if (isInvalid('destination')) {
+          <small class="search-field__error">Выберите пункт прибытия из списка</small>
+        }
+      </div>
     </p-floatlabel>
     <p-floatlabel class="search-field search-field--date" variant="on">
       <label for="date">
@@ -41,5 +51,12 @@
       ></p-datePicker>
     </p-floatlabel>
     <p-button label="НАЙТИ →" [pt]="buttonPt" [disabled]="!searchForm.valid" type="submit"></p-button>
+    <div class="search-form__error-slot">
+    @if (hasFormError('sameLocations')) {
+      <div class="search-form__error">
+        Пункт отправления и пункт прибытия должны отличаться
+      </div>
+    }
+    </div>
   </form>
 </div>
