@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, OnInit, output, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  output,
+} from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import {
   FormBuilder,
@@ -34,7 +41,7 @@ import { differentLocationsValidator } from './search-form.validators';
   ],
   templateUrl: './search-form.html',
   styleUrl: './search-form.css',
-  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchForm implements OnInit {
   readonly searchSubmitted = output<SearchCreateRequest>();

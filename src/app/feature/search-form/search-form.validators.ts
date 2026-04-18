@@ -1,4 +1,4 @@
-import { LocationAutocompleteItem } from '../../core/api/api.types';
+import { LocationAutocompleteItem } from '../../core/api';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 

@@ -34,3 +34,436 @@ a {
   --surface3: #222222;
   --border: rgba(255, 255, 255, 0.08);
 }
+
+.search-control {
+  display: block;
+}
+
+.search-control--date {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-control__input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 15px;
+  padding: 14px 16px;
+  outline: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.search-control__input--date {
+  padding-right: 44px;
+}
+
+.search-control__input::placeholder {
+  color: var(--muted);
+}
+
+.search-control__input:enabled:focus {
+  border-color: var(--orange);
+}
+
+.search-datepicker__dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin: 0 0 0 -32px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  z-index: 2;
+  flex-shrink: 0;
+  right: 10px;
+}
+
+.search-datepicker__dropdown:hover {
+  color: var(--orange);
+}
+
+.search-datepicker__dropdown-icon,
+.search-datepicker__input-icon {
+  color: var(--white);
+  position: absolute;
+  top: 15px;
+  right: 30px;
+  width: 18px;
+  height: 18px;
+}
+
+.search-control__overlay {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--white);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.search-control__loader {
+  color: var(--white);
+  position: absolute;
+  top: 15px;
+  right: 30px;
+  width: 18px;
+  height: 18px;
+}
+
+.search-datepicker__panel {
+  background: var(--surface2);
+  padding: 8px;
+  min-width: 320px;
+}
+
+.search-datepicker__calendar {
+  background: var(--surface);
+  color: var(--white);
+  border: 1px solid var(--border);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.search-datepicker__calendar-container {
+  padding: 0;
+}
+
+.search-datepicker__header {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 64px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 92, 0, 0.08), transparent);
+}
+
+.search-datepicker__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  color: var(--white);
+  flex: 1;
+}
+
+.search-datepicker__select {
+  appearance: none;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  line-height: 1;
+  min-height: 32px;
+  padding: 12px 10px;
+  outline: none;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  cursor: pointer;
+}
+
+.search-datepicker__select:hover,
+.search-datepicker__select:focus {
+  border-color: var(--orange);
+}
+
+.search-datepicker__nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.search-datepicker__nav-button:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.search-datepicker__day-view,
+.search-datepicker__month-view,
+.search-datepicker__year-view {
+  padding: 12px 10px 10px;
+}
+
+.search-datepicker__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.search-datepicker__table-header-cell,
+.search-datepicker__weekday-cell,
+.search-datepicker__week-header {
+  padding: 10px 0;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.search-datepicker__day-cell,
+.search-datepicker__week-number {
+  padding: 2px;
+}
+
+.search-datepicker__week-number,
+.search-datepicker__week-label-container,
+.search-datepicker__week-header-label {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.search-datepicker__day,
+.search-datepicker__month,
+.search-datepicker__year {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--white);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.search-datepicker__day:hover,
+.search-datepicker__month:hover,
+.search-datepicker__year:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: rgba(255, 92, 0, 0.08);
+}
+
+.search-datepicker__day-cell.p-datepicker-other-month .search-datepicker__day,
+.search-datepicker__day[aria-disabled='true'],
+.search-datepicker__day.p-disabled {
+  color: var(--muted);
+}
+
+.search-datepicker__day-cell.p-datepicker-other-month .search-datepicker__day:hover,
+.search-datepicker__day[aria-disabled='true']:hover,
+.search-datepicker__day.p-disabled:hover {
+  color: var(--muted);
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.search-datepicker__day[aria-selected='true'],
+.search-datepicker__month[aria-selected='true'],
+.search-datepicker__year[aria-selected='true'],
+.search-datepicker__day[data-p-selected='true'],
+.search-datepicker__month[data-p-selected='true'],
+.search-datepicker__year[data-p-selected='true'] {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--black);
+}
+
+.search-datepicker__day[data-p-today='true'],
+.search-datepicker__day[aria-current='date'] {
+  border-color: rgba(255, 92, 0, 0.45);
+  color: var(--orange);
+}
+
+.search-datepicker__month-view,
+.search-datepicker__year-view {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.search-datepicker__month,
+.search-datepicker__year {
+  width: 100%;
+}
+
+.search-datepicker__buttonbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.search-datepicker__action {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.search-datepicker__action:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.search-datepicker__action--today {
+  background: var(--orange);
+  color: var(--black);
+  font-weight: 600;
+}
+
+.search-datepicker__action--today:hover {
+  background: var(--orange-bright);
+  color: var(--black);
+}
+
+.search-submit {
+  height: 51px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 0;
+  background: var(--orange);
+  color: var(--black);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.search-submit:disabled {
+  background: #666666;
+  color: #c84800;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.search-submit:not(:disabled):hover {
+  background: var(--orange-bright);
+  transform: translateY(-1px);
+}
+
+.search-submit__label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.search-form .search-control {
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .search-submit {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .search-control__input {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .search-submit {
+    width: 100%;
+  }
+}
+
+.route-filters__price-input {
+  display: block;
+  flex: 1;
+}
+
+.route-filters__price-input-control {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 10px 12px;
+  outline: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.route-filters__price-input-control:enabled:focus,
+.route-filters__price-input-control:hover {
+  border-color: var(--orange);
+}
+
+.route-filters__checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.route-filters__checkbox-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.route-filters__checkbox-box {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--muted);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.route-filters__checkbox[data-p-checked='true'] .route-filters__checkbox-box,
+.route-filters__checkbox.p-checkbox-checked .route-filters__checkbox-box {
+  border-color: var(--orange);
+  background: var(--orange);
+}
+
+.route-filters__checkbox-icon {
+  color: var(--black);
+  font-size: 10px;
+}
+
+.route-filters__slider {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--surface2);
+}
+
+.route-filters__slider-range {
+  background: var(--orange);
+}
+
+.route-filters__slider-handle {
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border: 2px solid var(--orange);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+}

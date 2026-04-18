@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {Checkbox} from 'primeng/checkbox';
 import {Slider} from 'primeng/slider';
 import {FormsModule} from '@angular/forms';
@@ -14,7 +14,7 @@ import {InputNumber} from 'primeng/inputnumber';
   ],
   templateUrl: './route-filters.html',
   styleUrl: './route-filters.css',
-  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteFilters {
   protected readonly transportOptions = [
