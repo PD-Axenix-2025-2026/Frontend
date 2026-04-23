@@ -25,7 +25,7 @@
   border: 1px solid rgba(255, 92, 0, 0.28);
   background: rgba(255, 92, 0, 0.08);
   color: var(--orange);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 .search-page-placeholder__eyebrow {
   margin-bottom: 12px;
   color: var(--orange);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -67,7 +67,7 @@
 .search-page-placeholder__title {
   margin: 0;
   color: var(--white);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(44px, 7vw, 82px);
   font-weight: 400;
   letter-spacing: 3px;

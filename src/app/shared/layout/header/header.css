@@ -18,6 +18,7 @@
   display: flex;
   gap: 32px;
   a {
+    font-family: var(--font-ui);
     letter-spacing: 2px;
     font-size: 16px;
   }
@@ -28,7 +29,7 @@
 }
 
 .header-logo {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: var(--font-display);
   font-size: 32px;
   letter-spacing: 3px;
 }

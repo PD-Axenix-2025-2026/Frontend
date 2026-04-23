@@ -9,7 +9,7 @@
   padding: 20px 0 16px;
   border-bottom: 1px solid var(--border);
   color: var(--white);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: var(--font-display);
   font-size: 22px;
   letter-spacing: 2px;
 }
@@ -22,7 +22,7 @@
 .route-filters__section-title {
   margin-bottom: 14px;
   color: var(--orange);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 .route-filters__count {
   margin-left: auto;
   color: var(--muted);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 10px;
 }
 

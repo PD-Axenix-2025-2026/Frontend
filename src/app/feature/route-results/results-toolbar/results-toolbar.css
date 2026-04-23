@@ -9,7 +9,7 @@
 
 .results-toolbar__meta {
   color: var(--muted);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 11px;
   line-height: 1.4;
 }
@@ -33,7 +33,7 @@
   background: var(--surface2);
   color: var(--muted);
   cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
