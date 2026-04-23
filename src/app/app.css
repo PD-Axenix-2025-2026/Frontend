@@ -7,10 +7,89 @@
   gap: 32px;
 }
 
+.search-page-main--empty {
+  grid-template-columns: 1fr;
+}
+
 .search-page-sidebar {
   min-width: 0;
 }
 
 .search-page-results {
   min-width: 0;
+}
+
+.search-page-status {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 92, 0, 0.28);
+  background: rgba(255, 92, 0, 0.08);
+  color: var(--orange);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.search-page-placeholder {
+  min-height: 360px;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--orange);
+  background:
+    linear-gradient(135deg, rgba(255, 92, 0, 0.10), transparent 42%),
+    linear-gradient(180deg, var(--surface), var(--surface2));
+}
+
+.search-page-placeholder--error {
+  border-top-color: #ff8a8a;
+  background:
+    linear-gradient(135deg, rgba(255, 138, 138, 0.10), transparent 42%),
+    linear-gradient(180deg, var(--surface), var(--surface2));
+}
+
+.search-page-placeholder__eyebrow {
+  margin-bottom: 12px;
+  color: var(--orange);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.search-page-placeholder--error .search-page-placeholder__eyebrow {
+  color: #ff8a8a;
+}
+
+.search-page-placeholder__title {
+  margin: 0;
+  color: var(--white);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 7vw, 82px);
+  font-weight: 400;
+  letter-spacing: 3px;
+  line-height: 0.95;
+}
+
+.search-page-placeholder__text {
+  max-width: 560px;
+  margin: 18px 0 0;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .search-page-main {
+    padding: 28px 16px;
+    grid-template-columns: 1fr;
+  }
+
+  .search-page-placeholder {
+    min-height: 300px;
+    padding: 32px 24px;
+  }
 }

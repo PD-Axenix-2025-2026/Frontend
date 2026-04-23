@@ -10,6 +10,14 @@ import {
 } from './api.types';
 import { setParam, toCsv } from './http-params';
 
+export interface SearchFilters {
+  transportTypes?: TransportType[];
+  maxPrice?: number | null;
+  maxTransfers?: number | null;
+  maxDurationMinutes?: number | null;
+}
+
+
 type Query = {
   last_update?: number;
   sort?: SearchSortOption;

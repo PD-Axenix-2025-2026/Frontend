@@ -1,17 +1,53 @@
+@let cards = routeCards();
+@let hasCards = hasResults();
+
 <app-header />
 <app-hero />
 <app-search-form (searchSubmitted)="onSearchSubmitted($event)"/>
-<app-search-stats/>
+@if (hasCards) {
+  <app-search-stats/>
+}
 
-<div class="search-page-main">
-  <aside class="search-page-sidebar">
-    <app-route-filters></app-route-filters>
-  </aside>
+<div class="search-page-main" [class.search-page-main--empty]="!hasCards">
+  @if (hasCards) {
+    <aside class="search-page-sidebar">
+      <app-route-filters></app-route-filters>
+    </aside>
+  }
 
   <section class="search-page-results">
-    <app-results-toolbar></app-results-toolbar>
-    @for (item of routeCards(); track item.id) {
-      <app-route-card [item]="item"></app-route-card>
+    @if (hasCards) {
+      <app-results-toolbar></app-results-toolbar>
+      @if (searchState.isPolling()) {
+        <div class="search-page-status">Обновляем результаты...</div>
+      }
+      @for (card of cards; track card.id) {
+        <app-route-card [item]="card"></app-route-card>
+      }
+    } @else if (searchState.error()) {
+      <div class="search-page-placeholder search-page-placeholder--error">
+        <div class="search-page-placeholder__eyebrow">Ошибка поиска</div>
+        <h2 class="search-page-placeholder__title">Не удалось получить маршруты</h2>
+        <p class="search-page-placeholder__text">{{ searchState.error() }}</p>
+      </div>
+    } @else if (searchState.isLoading() || searchState.isPolling() || (hasSearchStarted() && !searchState.results())) {
+      <div class="search-page-placeholder">
+        <div class="search-page-placeholder__eyebrow">Поиск запущен</div>
+        <h2 class="search-page-placeholder__title">Ищем подходящие маршруты</h2>
+        <p class="search-page-placeholder__text">Собираем предложения по выбранному направлению. Первые результаты появятся здесь.</p>
+      </div>
+    } @else if (searchState.results()) {
+      <div class="search-page-placeholder">
+        <div class="search-page-placeholder__eyebrow">Ничего не найдено</div>
+        <h2 class="search-page-placeholder__title">Маршрутов по этим параметрам нет</h2>
+        <p class="search-page-placeholder__text">Попробуйте изменить дату, направление или фильтры поиска.</p>
+      </div>
+    } @else {
+      <div class="search-page-placeholder">
+        <div class="search-page-placeholder__eyebrow">Готовы к маршруту?</div>
+        <h2 class="search-page-placeholder__title">Начните поиск</h2>
+        <p class="search-page-placeholder__text">Выберите пункт отправления, пункт прибытия и дату поездки. Найденные варианты появятся в этом блоке.</p>
+      </div>
     }
   </section>
 </div>
