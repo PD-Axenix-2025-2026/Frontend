@@ -90,6 +90,21 @@ export class SearchStateService {
     });
   }
 
+  updateSort(sort: SearchSortOption): void {
+    if (this.sort() === sort) return;
+
+    this.sort.set(sort);
+    this.reloadCurrentResults();
+  }
+
+  private reloadCurrentResults(): void {
+    const searchId = this.searchId();
+    if (!searchId) return;
+
+    this.pollSubscription?.unsubscribe();
+    this.loadResults(searchId);
+  }
+
   private scheduleResultsLoad(searchId: string, delayMs: number): void {
     this.pollSubscription?.unsubscribe();
 

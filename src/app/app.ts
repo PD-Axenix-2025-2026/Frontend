@@ -6,7 +6,7 @@ import { SearchStats } from './feature/search-stats/search-stats';
 import { RouteFilters } from './feature/route-filters/route-filters';
 import { ResultsToolbar } from './feature/route-results/results-toolbar/results-toolbar';
 import { RouteCard } from './feature/route-results/route-card/route-card';
-import { SearchCreateRequest } from './core/api';
+import { SearchCreateRequest, SearchSortOption } from './core/api';
 import { SearchStateService } from './feature/search/search-state.service';
 import { mapRouteToCard } from './feature/route-results/route-card/route-card.mapper';
 
@@ -30,7 +30,15 @@ export class App {
       this.searchState.results() !== null,
   );
 
+  protected readonly totalFound = computed(() => this.searchState.meta()?.total_found ?? 0);
+  protected readonly shownCount = computed(() => this.searchState.items().length);
+  protected readonly activeSort = computed(() => this.searchState.sort());
+
   onSearchSubmitted(payload: SearchCreateRequest) {
     this.searchState.startSearch(payload);
+  }
+
+  onSortChanged(sort: SearchSortOption) {
+    this.searchState.updateSort(sort);
   }
 }

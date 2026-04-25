@@ -17,7 +17,12 @@
 
   <section class="search-page-results">
     @if (hasCards) {
-      <app-results-toolbar></app-results-toolbar>
+      <app-results-toolbar
+        [activeSort]="activeSort()"
+        [totalFound]="totalFound()"
+        [shownCount]="shownCount()"
+        (sortChanged)="onSortChanged($event)"
+      ></app-results-toolbar>
       @if (searchState.isPolling()) {
         <div class="search-page-status">Обновляем результаты...</div>
       }

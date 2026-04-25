@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { SearchSortOption } from '../../../core/api';
 
 @Component({
   selector: 'app-results-toolbar',
@@ -7,15 +8,21 @@ import { Component, signal } from '@angular/core';
   styleUrl: './results-toolbar.css',
 })
 export class ResultsToolbar {
-  protected readonly sortOptions = [
+  readonly activeSort = input.required<SearchSortOption>();
+  readonly totalFound = input(0);
+  readonly shownCount = input(0);
+
+  readonly sortChanged = output<SearchSortOption>();
+
+  protected readonly sortOptions: Array<{ id: SearchSortOption; icon: string; label: string }> = [
+    { id: 'best', icon: '★', label: 'Оптимальный' },
     { id: 'price', icon: '₽', label: 'Стоимость' },
     { id: 'duration', icon: '⏱', label: 'Время' },
-    { id: 'stops', icon: '↔', label: 'Пересадки' },
   ];
 
-  protected readonly activeSort = signal('price');
-
-  protected selectSort(sortId: string): void {
-    this.activeSort.set(sortId);
+  protected selectSort(sortId: SearchSortOption): void {
+    if (sortId !== this.activeSort()) {
+      this.sortChanged.emit(sortId);
+    }
   }
 }
