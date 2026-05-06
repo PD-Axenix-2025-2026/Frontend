@@ -1,56 +1,108 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {Checkbox} from 'primeng/checkbox';
-import {Slider} from 'primeng/slider';
-import {FormsModule} from '@angular/forms';
-import {InputNumber} from 'primeng/inputnumber';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+} from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Checkbox } from 'primeng/checkbox';
+import { Slider } from 'primeng/slider';
+import { InputNumber } from 'primeng/inputnumber';
+import { SearchFilters, SearchResultsFacetsResponse, TransportType } from '../../core/api';
+
+type RouteFiltersFormValue = {
+  transportTypes: {
+    plane: boolean;
+    train: boolean;
+    bus: boolean;
+  };
+  maxTransfers: number | null;
+  maxPrice: number | null;
+  maxDurationMinutes: number | null;
+};
+
+type TransferOption = {
+  value: number | null;
+  label: string;
+  count?: number;
+};
+
+const TRANSPORT_META: Array<{ value: TransportType; label: string; icon: string }> = [
+  { value: 'plane', label: 'Самолёт', icon: '✈' },
+  { value: 'train', label: 'Поезд', icon: '🚆' },
+  { value: 'bus', label: 'Автобус', icon: '🚌' },
+];
 
 @Component({
   selector: 'app-route-filters',
-  imports: [
-    Checkbox,
-    Slider,
-    FormsModule,
-    InputNumber
-  ],
+  imports: [Checkbox, Slider, FormsModule, InputNumber, ReactiveFormsModule],
   templateUrl: './route-filters.html',
   styleUrl: './route-filters.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteFilters {
-  protected readonly transportOptions = [
-    { id: 'air', label: 'Авиа', icon: '✈', count: 84, checked: true },
-    { id: 'train', label: 'Ж/д', icon: '🚆', count: 112, checked: true },
-    { id: 'bus', label: 'Автобус', icon: '🚌', count: 51, checked: false },
-  ];
+  private readonly fb = inject(FormBuilder);
 
-  protected readonly stopOptions = [
-    { id: 'direct', label: 'Прямые', count: 63, checked: true },
-    { id: 'one-stop', label: '1 пересадка', count: 98, checked: true },
-    { id: 'two-plus', label: '2+ пересадки', count: 86, checked: false },
-  ];
+  readonly filters = input<SearchFilters | null>(null);
+  readonly baseFacets = input<SearchResultsFacetsResponse | null>(null);
+  readonly currentFacets = input<SearchResultsFacetsResponse | null>(null);
 
-  protected readonly departureOptions = [
-    { id: 'morning', label: 'Утро 06:00-12:00', checked: true },
-    { id: 'day', label: 'День 12:00-18:00', checked: true },
-    { id: 'evening', label: 'Вечер 18:00-00:00', checked: false },
-    { id: 'night', label: 'Ночь 00:00-06:00', checked: false },
-  ];
+  readonly filtersChanged = output<SearchFilters>();
 
-  protected rangeValues: number[] = [2400, 15000];
+  readonly form = this.fb.group({
+    transportTypes: this.fb.group({
+      plane: this.fb.nonNullable.control(false),
+      train: this.fb.nonNullable.control(false),
+      bus: this.fb.nonNullable.control(false),
+    }),
+    maxTransfers: this.fb.control<number | null>(null),
+    maxPrice: this.fb.control<number | null>(null),
+    maxDurationMinutes: this.fb.control<number | null>(null),
+  });
+
+  protected readonly transportOptions = computed(() => {
+    const facets = this.baseFacets()?.transport_types ?? [];
+    const counts = new Map(facets.map((item) => [item.value, item.count]));
+
+    return TRANSPORT_META.map((option) => ({
+      ...option,
+      count: counts.get(option.value) ?? 0,
+    }));
+  });
+
+  protected readonly transferOptions = computed<TransferOption[]>(() => {
+    const facets = this.baseFacets()?.transfers ?? [];
+
+    return [
+      { value: null, label: 'Любые пересадки' },
+      ...facets.map((item) => ({
+        value: item.value,
+        label: item.value === 0 ? 'Без пересадок' : `До ${item.value} пересадок`,
+        count: facets
+          .filter((facet) => facet.value <= item.value)
+          .reduce((sum, facet) => sum + facet.count, 0),
+      })),
+    ];
+  });
+
+  protected readonly maxPriceLimit = computed(() => {
+    return this.baseFacets()?.price.max ?? 0;
+  });
+
+  protected readonly maxDurationLimit = computed(() => {
+    return this.baseFacets()?.duration_minutes.max ?? 0;
+  });
 
   protected readonly checkboxPt = {
     root: { class: 'route-filters__checkbox' },
-    input: { class: 'route-filters__checkbox-input' },
     box: { class: 'route-filters__checkbox-box' },
+    input: { class: 'route-filters__checkbox-input' },
     icon: { class: 'route-filters__checkbox-icon' },
-  };
-
-  protected readonly sliderPt = {
-    root: { class: 'route-filters__slider' },
-    range: { class: 'route-filters__slider-range' },
-    handle: { class: 'route-filters__slider-handle' },
-    startHandler: { class: 'route-filters__slider-handle' },
-    endHandler: { class: 'route-filters__slider-handle' },
   };
 
   protected readonly priceInputPt = {
@@ -60,20 +112,68 @@ export class RouteFilters {
     },
   };
 
-  protected updateRangeValue(index: 0 | 1, value: number | null): void {
-    if (value === null) {
-      return;
-    }
+  protected readonly sliderPt = {
+    root: { class: 'route-filters__slider' },
+    range: { class: 'route-filters__slider-range' },
+    handle: { class: 'route-filters__slider-handle' },
+  };
 
-    const nextValue = Math.max(2400, Math.min(15000, value));
-    const [minValue, maxValue] = this.rangeValues;
+  constructor() {
+    effect(() => {
+      const filters = this.filters();
 
-    if (index === 0) {
-      this.rangeValues = [Math.min(nextValue, maxValue), maxValue];
-      return;
-    }
+      this.form.patchValue(
+        {
+          transportTypes: {
+            plane: filters?.transportTypes?.includes('plane') ?? false,
+            train: filters?.transportTypes?.includes('train') ?? false,
+            bus: filters?.transportTypes?.includes('bus') ?? false,
+          },
+          maxTransfers: filters?.maxTransfers ?? null,
+          maxPrice: filters?.maxPrice ?? this.baseFacets()?.price.max ?? null,
+          maxDurationMinutes: filters?.maxDurationMinutes ?? null,
+        },
+        { emitEvent: false },
+      );
+    });
 
-    this.rangeValues = [minValue, Math.max(nextValue, minValue)];
+    this.form.valueChanges
+      .pipe(
+        debounceTime(250),
+        map(() => toSearchFilters(this.form.getRawValue())),
+        distinctUntilChanged(),
+        takeUntilDestroyed(),
+      )
+      .subscribe((filters) => this.filtersChanged.emit(filters));
   }
 
+  protected resetFilters(): void {
+    this.form.patchValue({
+      transportTypes: {
+        plane: false,
+        train: false,
+        bus: false,
+      },
+      maxTransfers: null,
+      maxPrice: this.baseFacets()?.price.max ?? null,
+      maxDurationMinutes: this.baseFacets()?.duration_minutes.max ?? null,
+    });
+  }
+
+  protected hasBaseFacets(): boolean {
+    return this.baseFacets() !== null;
+  }
+}
+
+function toSearchFilters(value: RouteFiltersFormValue): SearchFilters {
+  const transportTypes = (Object.entries(value.transportTypes) as Array<[TransportType, boolean]>)
+    .filter(([, checked]) => checked)
+    .map(([type]) => type);
+
+  return {
+    transportTypes: transportTypes.length > 0 ? transportTypes : undefined,
+    maxTransfers: value.maxTransfers ?? undefined,
+    maxPrice: value.maxPrice ?? undefined,
+    maxDurationMinutes: value.maxDurationMinutes ?? undefined,
+  };
 }

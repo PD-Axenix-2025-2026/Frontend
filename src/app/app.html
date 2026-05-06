@@ -1,33 +1,50 @@
 @let cards = routeCards();
-@let hasCards = hasResults();
+@let hasCardsValue = hasCards();
+@let hasResultsResponseValue = hasResultsResponse();
 
 <app-header />
 <app-hero />
-<app-search-form (searchSubmitted)="onSearchSubmitted($event)"/>
-@if (hasCards) {
-  <app-search-stats/>
+<app-search-form (searchSubmitted)="onSearchSubmitted($event)" />
+
+@if (hasResultsResponseValue) {
+  <app-search-stats />
 }
 
-<div class="search-page-main" [class.search-page-main--empty]="!hasCards">
-  @if (hasCards) {
+<div class="search-page-main" [class.search-page-main--empty]="!hasResultsResponseValue">
+  @if (hasResultsResponseValue) {
     <aside class="search-page-sidebar">
-      <app-route-filters></app-route-filters>
+      <app-route-filters
+        [filters]="searchState.filters()"
+        [baseFacets]="searchState.baseFacets()"
+        [currentFacets]="searchState.facets()"
+        (filtersChanged)="onFiltersChanged($event)"
+      />
     </aside>
   }
 
   <section class="search-page-results">
-    @if (hasCards) {
+    @if (hasResultsResponseValue) {
       <app-results-toolbar
         [activeSort]="activeSort()"
         [totalFound]="totalFound()"
         [shownCount]="shownCount()"
         (sortChanged)="onSortChanged($event)"
-      ></app-results-toolbar>
+      />
+
       @if (searchState.isPolling()) {
         <div class="search-page-status">Обновляем результаты...</div>
       }
-      @for (card of cards; track card.id) {
-        <app-route-card [item]="card"></app-route-card>
+
+      @if (hasCardsValue) {
+        @for (card of cards; track card.id) {
+          <app-route-card [item]="card"></app-route-card>
+        }
+      } @else {
+        <div class="search-page-placeholder">
+          <div class="search-page-placeholder__eyebrow">Ничего не найдено</div>
+          <h2 class="search-page-placeholder__title">Маршрутов по этим параметрам нет</h2>
+          <p class="search-page-placeholder__text">Попробуйте поменять фильтры или изменить направление.</p>
+        </div>
       }
     } @else if (searchState.error()) {
       <div class="search-page-placeholder search-page-placeholder--error">
@@ -39,19 +56,13 @@
       <div class="search-page-placeholder">
         <div class="search-page-placeholder__eyebrow">Поиск запущен</div>
         <h2 class="search-page-placeholder__title">Ищем подходящие маршруты</h2>
-        <p class="search-page-placeholder__text">Собираем предложения по выбранному направлению. Первые результаты появятся здесь.</p>
-      </div>
-    } @else if (searchState.results()) {
-      <div class="search-page-placeholder">
-        <div class="search-page-placeholder__eyebrow">Ничего не найдено</div>
-        <h2 class="search-page-placeholder__title">Маршрутов по этим параметрам нет</h2>
-        <p class="search-page-placeholder__text">Попробуйте изменить дату, направление или фильтры поиска.</p>
+        <p class="search-page-placeholder__text">Собираем предложения по выбранному направлению.</p>
       </div>
     } @else {
       <div class="search-page-placeholder">
         <div class="search-page-placeholder__eyebrow">Готовы к маршруту?</div>
         <h2 class="search-page-placeholder__title">Начните поиск</h2>
-        <p class="search-page-placeholder__text">Выберите пункт отправления, пункт прибытия и дату поездки. Найденные варианты появятся в этом блоке.</p>
+        <p class="search-page-placeholder__text">Выберите пункт отправления, пункт прибытия и дату поездки.</p>
       </div>
     }
   </section>

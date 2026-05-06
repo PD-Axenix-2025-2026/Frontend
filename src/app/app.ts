@@ -6,7 +6,7 @@ import { SearchStats } from './feature/search-stats/search-stats';
 import { RouteFilters } from './feature/route-filters/route-filters';
 import { ResultsToolbar } from './feature/route-results/results-toolbar/results-toolbar';
 import { RouteCard } from './feature/route-results/route-card/route-card';
-import { SearchCreateRequest, SearchSortOption } from './core/api';
+import { SearchCreateRequest, SearchFilters, SearchSortOption } from './core/api';
 import { SearchStateService } from './feature/search/search-state.service';
 import { mapRouteToCard } from './feature/route-results/route-card/route-card.mapper';
 
@@ -20,8 +20,8 @@ export class App {
   protected readonly searchState = inject(SearchStateService);
 
   protected readonly routeCards = computed(() => this.searchState.items().map(mapRouteToCard));
-
-  protected readonly hasResults = computed(() => this.routeCards().length > 0);
+  protected readonly hasCards = computed(() => this.routeCards().length > 0);
+  protected readonly hasResultsResponse = computed(() => this.searchState.results() !== null);
   protected readonly hasSearchStarted = computed(
     () =>
       this.searchState.searchId() !== null ||
@@ -40,5 +40,9 @@ export class App {
 
   onSortChanged(sort: SearchSortOption) {
     this.searchState.updateSort(sort);
+  }
+
+  onFiltersChanged(filters: SearchFilters) {
+    this.searchState.updateFilters(filters);
   }
 }

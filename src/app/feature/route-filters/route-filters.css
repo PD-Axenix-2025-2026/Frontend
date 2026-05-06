@@ -64,3 +64,26 @@
   margin-bottom: 10px;
   gap: 8px;
 }
+
+.route-filters__reset {
+  margin-top: 18px;
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--white);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.route-filters__reset:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
