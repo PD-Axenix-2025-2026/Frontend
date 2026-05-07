@@ -12,7 +12,10 @@
               [formControlName]="option.value"
               [pt]="checkboxPt"
             />
-            <span class="route-filters__option-label">{{ option.icon }} {{ option.label }}</span>
+            <img width="20" height="20" [src]="option.icon" [alt]="option.label" class="route-filters__type-icon"/>
+            <span class="route-filters__option-label">
+              {{ option.label }}
+            </span>
             <span class="route-filters__count">{{ option.count }}</span>
           </label>
         }

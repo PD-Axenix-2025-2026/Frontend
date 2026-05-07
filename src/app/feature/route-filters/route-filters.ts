@@ -30,13 +30,15 @@ type TransferOption = {
   value: number | null;
   label: string;
   count?: number;
+  icon?: string;
 };
 
 const TRANSPORT_META: Array<{ value: TransportType; label: string; icon: string }> = [
-  { value: 'plane', label: 'Самолёт', icon: '✈' },
-  { value: 'train', label: 'Поезд', icon: '🚆' },
-  { value: 'bus', label: 'Автобус', icon: '🚌' },
+  { value: 'plane', label: 'Самолёт', icon: 'plane.svg' },
+  { value: 'train', label: 'Поезд', icon: 'train.svg' },
+  { value: 'bus', label: 'Автобус', icon: 'bus.svg' },
 ];
+
 
 @Component({
   selector: 'app-route-filters',
