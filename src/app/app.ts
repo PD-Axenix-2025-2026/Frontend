@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, DOCUMENT, inject, signal } from '@angular/core';
 import { Header } from './shared/layout/header/header';
 import { Hero } from './shared/ui/hero/hero';
 import { SearchForm } from './feature/search-form/search-form';
@@ -17,8 +17,11 @@ import { mapRouteToCard } from './feature/route-results/route-card/route-card.ma
   styleUrl: './app.css',
 })
 export class App {
+  private readonly document = inject(DOCUMENT);
+
   protected readonly searchState = inject(SearchStateService);
 
+  protected activeCardId = signal<string | null>(null);
   protected readonly routeCards = computed(() => this.searchState.items().map(mapRouteToCard));
   protected readonly hasCards = computed(() => this.routeCards().length > 0);
   protected readonly hasResultsResponse = computed(() => this.searchState.results() !== null);
@@ -44,5 +47,18 @@ export class App {
 
   onFiltersChanged(filters: SearchFilters) {
     this.searchState.updateFilters(filters);
+  }
+
+  onStatRouteSelected(routeId: string) {
+    this.activeCardId.set(routeId);
+
+    const element = this.document.getElementById(this.routeAnchorId(routeId));
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    setTimeout(() => this.activeCardId.set(null), 3000);
+  }
+
+  protected routeAnchorId(routeId: string): string {
+    return `route-card-${routeId}`;
   }
 }

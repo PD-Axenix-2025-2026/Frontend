@@ -14,11 +14,29 @@
 
 .stat-card {
   padding: 24px 28px;
+  border: none;
   border-right: 1px solid var(--border);
+  background: transparent;
+  text-align: left;
+  appearance: none;
 }
 
 .stat-card:last-child {
   border-right: none;
+}
+
+.stat-card--interactive {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.stat-card--interactive:hover {
+  background: rgba(255, 92, 0, 0.06);
+}
+
+.stat-card:disabled {
+  cursor: default;
+  opacity: 1;
 }
 
 .stat-value {

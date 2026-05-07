@@ -1,5 +1,6 @@
 export interface SearchStatItem {
-  id: number;
+  id: string;
   value: string;
   label: string;
+  routeId?: string;
 }

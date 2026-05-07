@@ -2,12 +2,16 @@
 @let hasCardsValue = hasCards();
 @let hasResultsResponseValue = hasResultsResponse();
 
-<app-header />
-<app-hero />
-<app-search-form (searchSubmitted)="onSearchSubmitted($event)" />
+<app-header/>
+<app-hero/>
+<app-search-form (searchSubmitted)="onSearchSubmitted($event)"/>
 
 @if (hasResultsResponseValue) {
-  <app-search-stats />
+  <app-search-stats
+    [items]="searchState.items()"
+    [totalFound]="totalFound()"
+    (routeSelected)="onStatRouteSelected($event)"
+  />
 }
 
 <div class="search-page-main" [class.search-page-main--empty]="!hasResultsResponseValue">
@@ -37,7 +41,9 @@
 
       @if (hasCardsValue) {
         @for (card of cards; track card.id) {
-          <app-route-card [item]="card"></app-route-card>
+          <div [id]="routeAnchorId(card.id)" [class.is-highlighted]="activeCardId() === card.id">
+            <app-route-card [item]="card"></app-route-card>
+          </div>
         }
       } @else {
         <div class="search-page-placeholder">

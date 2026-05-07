@@ -1,10 +1,16 @@
 <div class="stats-container">
   <div class="stats-row">
     @for (item of stats(); track item.id) {
-      <article class="stat-card">
+      <button
+        type="button"
+        class="stat-card"
+        [class.stat-card--interactive]="!!item.routeId"
+        [disabled]="!item.routeId"
+        (click)="onStatClick(item)"
+      >
         <div class="stat-value">{{ item.value }}</div>
         <div class="stat-label">{{ item.label }}</div>
-      </article>
+      </button>
     }
   </div>
 </div>
