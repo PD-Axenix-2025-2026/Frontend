@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
@@ -46,6 +47,7 @@ import { differentLocationsValidator } from './search-form.validators';
 export class SearchForm implements OnInit {
   readonly searchSubmitted = output<SearchCreateRequest>();
 
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly locationApi = inject(LocationsApiService);
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
@@ -136,7 +138,10 @@ export class SearchForm implements OnInit {
         )
       }),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(locations => { apply(locations) })
+    ).subscribe(locations => {
+      this.cdr.markForCheck();
+      apply(locations);
+    })
   }
 
   private toIsoDate(date: Date): string {
