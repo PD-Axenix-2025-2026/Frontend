@@ -133,7 +133,7 @@ export class RouteFilters {
           },
           maxTransfers: filters?.maxTransfers ?? null,
           maxPrice: filters?.maxPrice ?? this.baseFacets()?.price.max ?? null,
-          maxDurationMinutes: filters?.maxDurationMinutes ?? null,
+          maxDurationMinutes: filters?.maxDurationMinutes ?? this.baseFacets()?.duration_minutes.max ?? null,
         },
         { emitEvent: false },
       );

@@ -35,11 +35,11 @@ function mapSegment(segment: RouteListItemResponse['segments'][number]): RouteCa
 function transportIcon(type: TransportType) {
   switch (type) {
     case 'plane':
-      return '✈';
+      return 'plane.svg';
     case 'train':
-      return '🚆';
+      return 'train.svg';
     case 'bus':
-      return '🚌';
+      return 'bus.svg';
   }
 }
 
@@ -55,7 +55,7 @@ function formatDuration(minutes: number): string {
   const restMinutes = minutes % 60;
 
   if (hours === 0) return `0${restMinutes}мин`;
-  if (restMinutes === 0) return `0${hours}ч`;
+  if (restMinutes === 0) return `${hours}ч`;
 
   return `${hours}ч ${restMinutes}мин`;
 }

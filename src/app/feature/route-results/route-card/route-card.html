@@ -31,7 +31,9 @@
   <div class="route-card__segments">
     @for (segment of item().segments; track segment.id) {
       <div class="route-card__segment">
-        <span class="route-card__segment-icon">{{ segment.icon }}</span>
+        <span class="route-card__segment-icon">
+        <img width="36" height="36" [src]="segment.icon" [alt]="segment.detail">
+        </span>
         <div class="route-card__segment-info">
           <div class="route-card__segment-route">{{ segment.route }}</div>
           <div class="route-card__segment-detail">{{ segment.detail }}</div>
