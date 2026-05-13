@@ -1,59 +1,179 @@
-# AxenixFrontend
+# Axenix Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+Фронтенд приложения для поиска маршрутов. Проект собран на Angular 21 и работает как SPA с обращением к backend API по префиксу `/api`.
 
-## Development server
+## Стек
 
-To start a local development server, run:
+- Angular 21
+- TypeScript
+- RxJS
+- PrimeNG
 
-```bash
-ng serve
-```
+## Что делает приложение
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Фронт реализует основной пользовательский сценарий поиска маршрутов:
 
-## Code scaffolding
+- автокомплит пунктов отправления и прибытия;
+- запуск поиска маршрутов;
+- поллинг результатов поиска;
+- сортировку и фильтрацию найденных маршрутов;
+- отображение карточек маршрутов и агрегированной статистики.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Требования
 
-```bash
-ng generate component component-name
-```
+- Node.js 20+
+- npm 11+
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+В репозитории уже используется `npm`, это зафиксировано в `package.json` и `angular.json`.
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Установка зависимостей
 
 ```bash
-ng build
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Локальный запуск
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+По умолчанию dev-сервер поднимается на:
 
-For end-to-end (e2e) testing, run:
+```text
+http://localhost:4200
+```
+
+## Запуск через Docker
+
+Для фронта добавлен отдельный `docker-compose.yml` в директории `axenix-frontend`.
+
+Запуск:
 
 ```bash
-ng e2e
+docker compose up --build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+После старта приложение будет доступно на:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Остановка:
+
+```bash
+docker compose down
+```
+
+Этот сценарий поднимает Angular dev server внутри контейнера и монтирует исходники в `/app`, поэтому изменения в коде подхватываются без пересборки образа.
+
+## Подключение к backend
+
+Во время локальной разработки Angular использует proxy-конфиг [proxy.conf.json](/Users/arseniy/axenix-project/axenix-frontend/proxy.conf.json), который проксирует запросы:
+
+```text
+/api -> http://localhost:8000
+```
+
+При запуске через Docker используется отдельный proxy-конфиг [proxy.conf.docker.json](/Users/arseniy/axenix-project/axenix-frontend/proxy.conf.docker.json):
+
+```text
+/api -> http://host.docker.internal:8000
+```
+
+Для нормальной работы фронта backend должен быть доступен на `http://localhost:8000`.
+
+Основные используемые endpoint'ы:
+
+- `GET /api/locations`
+- `POST /api/searches`
+- `GET /api/searches/{search_id}/results`
+
+## Полезные команды
+
+Запуск dev-сервера:
+
+```bash
+npm start
+```
+
+Сборка production-бандла:
+
+```bash
+npm run build
+```
+
+Сборка в watch-режиме:
+
+```bash
+npm run watch
+```
+
+Запуск unit-тестов:
+
+```bash
+npm test
+```
+
+## Структура проекта
+
+```text
+src/app/
+  core/
+    api/                 API-сервисы, типы и сборка query params
+  feature/
+    search/              состояние поиска и поллинг результатов
+    search-form/         форма поиска
+    search-stats/        блок со статистикой по найденным маршрутам
+    route-filters/       фильтры результатов
+    route-results/       карточки маршрутов и toolbar
+  shared/
+    layout/              общие layout-компоненты
+    ui/                  базовые UI-компоненты
+```
+
+## Архитектура
+
+Приложение построено вокруг `SearchStateService`, который:
+
+- отправляет запрос на создание поиска;
+- хранит `searchId`, статус, результаты и ошибки;
+- запускает поллинг результатов;
+- переиспользует текущие фильтры и сортировку при повторной загрузке данных.
+
+API-слой вынесен в `src/app/core/api`:
+
+- [searches.api.ts](/Users/arseniy/axenix-project/axenix-frontend/src/app/core/api/searches.api.ts)
+- [locations.api.ts](/Users/arseniy/axenix-project/axenix-frontend/src/app/core/api/locations.api.ts)
+
+Точка входа страницы находится в:
+
+- [app.ts](/Users/arseniy/axenix-project/axenix-frontend/src/app/app.ts)
+- [app.html](/Users/arseniy/axenix-project/axenix-frontend/src/app/app.html)
+
+## Сборка
+
+Production-сборка складывается в директорию:
+
+```text
+dist/axenix-frontend
+```
+
+Команда:
+
+```bash
+npm run build
+```
+
+Также добавлен multi-stage [Dockerfile](/Users/arseniy/axenix-project/axenix-frontend/Dockerfile):
+
+- `dev` stage для локальной разработки через `docker compose`;
+- `build` stage для production-сборки Angular;
+- `prod` stage на базе `nginx`, если позже понадобится отдавать статический бандл из контейнера.
+
+## Примечания
+
+- Базовый URL API задается через `API_BASE_URL` и по умолчанию равен `/api`.
+- Если backend недоступен или возвращает ошибку, фронт показывает состояние ошибки в основном контентном блоке.
+- Если поиск завершился без результатов, фронт показывает пустое состояние без падения страницы.
