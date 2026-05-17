@@ -25,6 +25,29 @@ export class App {
   protected readonly routeCards = computed(() => this.searchState.items().map(mapRouteToCard));
   protected readonly hasCards = computed(() => this.routeCards().length > 0);
   protected readonly hasResultsResponse = computed(() => this.searchState.results() !== null);
+  protected readonly shouldShowLoadingResultsState = computed(() => {
+    const results = this.searchState.results();
+    if (results === null) {
+      return (
+        this.searchState.isLoading() ||
+        this.searchState.isPolling() ||
+        this.searchState.searchId() !== null
+      );
+    }
+
+    return (
+      !results.is_complete &&
+      !this.searchState.error() &&
+      this.routeCards().length === 0
+    );
+  });
+  protected readonly shouldShowResultsLayout = computed(() => {
+    if (this.shouldShowLoadingResultsState()) {
+      return false;
+    }
+
+    return this.hasResultsResponse();
+  });
   protected readonly hasSearchStarted = computed(
     () =>
       this.searchState.searchId() !== null ||

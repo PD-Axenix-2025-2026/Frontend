@@ -1,12 +1,14 @@
 @let cards = routeCards();
 @let hasCardsValue = hasCards();
 @let hasResultsResponseValue = hasResultsResponse();
+@let shouldShowLoadingResultsStateValue = shouldShowLoadingResultsState();
+@let shouldShowResultsLayoutValue = shouldShowResultsLayout();
 
 <app-header/>
 <app-hero/>
 <app-search-form (searchSubmitted)="onSearchSubmitted($event)"/>
 
-@if (hasResultsResponseValue) {
+@if (shouldShowResultsLayoutValue) {
   <app-search-stats
     [items]="searchState.items()"
     [totalFound]="totalFound()"
@@ -14,8 +16,8 @@
   />
 }
 
-<div class="search-page-main" [class.search-page-main--empty]="!hasResultsResponseValue">
-  @if (hasResultsResponseValue) {
+<div class="search-page-main" [class.search-page-main--empty]="!shouldShowResultsLayoutValue">
+  @if (shouldShowResultsLayoutValue) {
     <aside class="search-page-sidebar">
       <app-route-filters
         [filters]="searchState.filters()"
@@ -27,7 +29,7 @@
   }
 
   <section class="search-page-results">
-    @if (hasResultsResponseValue) {
+    @if (shouldShowResultsLayoutValue) {
       <app-results-toolbar
         [activeSort]="activeSort()"
         [totalFound]="totalFound()"
@@ -35,7 +37,7 @@
         (sortChanged)="onSortChanged($event)"
       />
 
-      @if (searchState.isPolling()) {
+      @if (searchState.isPolling() && hasCardsValue) {
         <div class="search-page-status">Обновляем результаты...</div>
       }
 
@@ -58,7 +60,7 @@
         <h2 class="search-page-placeholder__title">Не удалось получить маршруты</h2>
         <p class="search-page-placeholder__text">{{ searchState.error() }}</p>
       </div>
-    } @else if (searchState.isLoading() || searchState.isPolling() || (hasSearchStarted() && !searchState.results())) {
+    } @else if (shouldShowLoadingResultsStateValue || (hasSearchStarted() && !hasResultsResponseValue)) {
       <div class="search-page-placeholder">
         <div class="search-page-placeholder__eyebrow">Поиск запущен</div>
         <h2 class="search-page-placeholder__title">Ищем подходящие маршруты</h2>
