@@ -1,6 +1,12 @@
 <div class="results-toolbar">
   <div class="results-toolbar__meta">
     Найдено <b>{{ totalFound() }}</b> маршрутов · показано 1-{{ shownCount() }}
+    @if (isUpdating()) {
+      <span class="results-toolbar__status">
+        <span class="results-toolbar__status-dot"></span>
+        Обновляем
+      </span>
+    }
   </div>
 
   <div class="results-toolbar__sorts">

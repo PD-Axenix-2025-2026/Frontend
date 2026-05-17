@@ -35,35 +35,34 @@
         [activeSort]="activeSort()"
         [totalFound]="totalFound()"
         [shownCount]="shownCount()"
+        [isUpdating]="searchState.isPolling() && hasCardsValue"
         (sortChanged)="onSortChanged($event)"
       />
 
-      @if (searchState.isPolling() && hasCardsValue) {
-        <div class="search-page-status">Обновляем результаты...</div>
-      }
-
       @if (hasCardsValue) {
-        @for (card of cards; track card.id) {
-          <div [id]="routeAnchorId(card.id)" [class.is-highlighted]="activeCardId() === card.id">
-            <app-route-card [item]="card"></app-route-card>
-          </div>
-        }
+        <div class="search-page-results-stack">
+          @for (card of cards; track card.id) {
+            <div [id]="routeAnchorId(card.id)" [class.is-highlighted]="activeCardId() === card.id">
+              <app-route-card [item]="card"></app-route-card>
+            </div>
+          }
 
-        @if (canLoadMore()) {
-          <div class="search-page-more">
-            <button
-              type="button"
-              class="search-page-more__button"
-              [disabled]="searchState.isPolling()"
-              (click)="onLoadMore()">
-              @if (searchState.isPolling()) {
-                Обновляем...
-              } @else {
-                ПОКАЗАТЬ ЕЩЕ
-              }
-            </button>
-          </div>
-        }
+          @if (canLoadMore()) {
+            <div class="search-page-more">
+              <button
+                type="button"
+                class="search-page-more__button"
+                [disabled]="searchState.isPolling()"
+                (click)="onLoadMore()">
+                @if (searchState.isPolling()) {
+                  Обновляем...
+                } @else {
+                  ПОКАЗАТЬ ЕЩЕ
+                }
+              </button>
+            </div>
+          }
+        </div>
       } @else {
         <div class="search-page-placeholder">
           <div class="search-page-placeholder__eyebrow">Ничего не найдено</div>

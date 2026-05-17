@@ -11,6 +11,7 @@ export class ResultsToolbar {
   readonly activeSort = input.required<SearchSortOption>();
   readonly totalFound = input(0);
   readonly shownCount = input(0);
+  readonly isUpdating = input(false);
 
   readonly sortChanged = output<SearchSortOption>();
 
