@@ -1,4 +1,4 @@
-import { Component, computed, DOCUMENT, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, DOCUMENT, inject, signal } from '@angular/core';
 import { Header } from './shared/layout/header/header';
 import { Hero } from './shared/ui/hero/hero';
 import { SearchForm } from './feature/search-form/search-form';
@@ -9,6 +9,9 @@ import { RouteCard } from './feature/route-results/route-card/route-card';
 import { SearchCreateRequest, SearchFilters, SearchSortOption } from './core/api';
 import { SearchStateService } from './feature/search/search-state.service';
 import { mapRouteToCard } from './feature/route-results/route-card/route-card.mapper';
+import { fromEvent } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +21,12 @@ import { mapRouteToCard } from './feature/route-results/route-card/route-card.ma
 })
 export class App {
   private readonly document = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly searchState = inject(SearchStateService);
 
   protected activeCardId = signal<string | null>(null);
+  protected showScrollToTop = signal(false);
   protected readonly routeCards = computed(() => this.searchState.items().map(mapRouteToCard));
   protected readonly hasCards = computed(() => this.routeCards().length > 0);
   protected readonly hasResultsResponse = computed(() => this.searchState.results() !== null);
@@ -59,6 +64,20 @@ export class App {
   protected readonly totalFound = computed(() => this.searchState.meta()?.total_found ?? 0);
   protected readonly shownCount = computed(() => this.searchState.items().length);
   protected readonly activeSort = computed(() => this.searchState.sort());
+  protected readonly canLoadMore = computed(() => this.searchState.canLoadMore());
+
+  constructor() {
+    const win = this.document.defaultView;
+    if (!win) return;
+
+    fromEvent(win, 'scroll')
+      .pipe(
+        map(() => win.scrollY > 640),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((visible) => this.showScrollToTop.set(visible));
+  }
 
   onSearchSubmitted(payload: SearchCreateRequest) {
     this.searchState.startSearch(payload);
@@ -72,6 +91,15 @@ export class App {
     this.searchState.updateFilters(filters);
   }
 
+  onLoadMore() {
+    this.searchState.loadMore();
+  }
+
+  onScrollToResultsTop() {
+    const element = this.document.getElementById(this.resultsTopAnchorId());
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   onStatRouteSelected(routeId: string) {
     this.activeCardId.set(routeId);
 
@@ -83,5 +111,9 @@ export class App {
 
   protected routeAnchorId(routeId: string): string {
     return `route-card-${routeId}`;
+  }
+
+  protected resultsTopAnchorId(): string {
+    return 'search-results-top';
   }
 }

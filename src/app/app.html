@@ -30,6 +30,7 @@
 
   <section class="search-page-results">
     @if (shouldShowResultsLayoutValue) {
+      <div [id]="resultsTopAnchorId()"></div>
       <app-results-toolbar
         [activeSort]="activeSort()"
         [totalFound]="totalFound()"
@@ -45,6 +46,22 @@
         @for (card of cards; track card.id) {
           <div [id]="routeAnchorId(card.id)" [class.is-highlighted]="activeCardId() === card.id">
             <app-route-card [item]="card"></app-route-card>
+          </div>
+        }
+
+        @if (canLoadMore()) {
+          <div class="search-page-more">
+            <button
+              type="button"
+              class="search-page-more__button"
+              [disabled]="searchState.isPolling()"
+              (click)="onLoadMore()">
+              @if (searchState.isPolling()) {
+                Обновляем...
+              } @else {
+                ПОКАЗАТЬ ЕЩЕ
+              }
+            </button>
           </div>
         }
       } @else {
@@ -75,3 +92,13 @@
     }
   </section>
 </div>
+
+@if (showScrollToTop() && hasCards()) {
+  <button
+    type="button"
+    class="search-page-scroll-top"
+    aria-label="Подняться к началу результатов"
+    (click)="onScrollToResultsTop()">
+    ↑
+  </button>
+}

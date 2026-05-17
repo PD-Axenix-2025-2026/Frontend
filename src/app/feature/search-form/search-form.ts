@@ -173,7 +173,7 @@ export class SearchForm implements OnInit {
     pcInputText: {
       root: {
         class: 'search-control__input',
-        placeholder: 'Москва (MOW)',
+        placeholder: 'Москва',
       },
     },
     overlay: { class: 'search-control__overlay' },
@@ -189,7 +189,7 @@ export class SearchForm implements OnInit {
     pcInputText: {
       root: {
         class: 'search-control__input',
-        placeholder: 'Санкт-Петербург (LED)',
+        placeholder: 'Санкт-Петербург',
       },
     },
     overlay: { class: 'search-control__overlay' },

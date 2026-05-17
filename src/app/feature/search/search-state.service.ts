@@ -14,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 const DEFAULT_FILTERS: SearchFilters = {
   maxTransfers: 0,
 };
+const INITIAL_RESULTS_LIMIT = 6;
+const RESULTS_PAGE_STEP = 6;
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +43,11 @@ export class SearchStateService {
   lastUpdate = signal(0);
   sort = signal<SearchSortOption>('best');
   filters = signal<SearchFilters>(DEFAULT_FILTERS);
+  resultsLimit = signal(INITIAL_RESULTS_LIMIT);
+  canLoadMore = computed(() => {
+    const meta = this.meta();
+    return meta !== null && this.items().length < meta.total_found;
+  });
 
   constructor() {
     this.reloadResults$
@@ -60,7 +67,7 @@ export class SearchStateService {
               max_transfers: filters.maxTransfers,
               max_duration_minutes: filters.maxDurationMinutes,
               transport_types: filters.transportTypes,
-              limit: 20,
+              limit: this.resultsLimit(),
               offset: 0,
             })
             .pipe(
@@ -128,6 +135,14 @@ export class SearchStateService {
     this.reloadCurrentResults();
   }
 
+  loadMore(): void {
+    const searchId = this.searchId();
+    if (!searchId || !this.canLoadMore() || this.isPolling()) return;
+
+    this.resultsLimit.update((value) => value + RESULTS_PAGE_STEP);
+    this.reloadResults$.next(searchId);
+  }
+
   private reloadCurrentResults(): void {
     const searchId = this.searchId();
     if (!searchId) return;
@@ -155,6 +170,7 @@ export class SearchStateService {
     this.results.set(null);
     this.baseFacets.set(null);
     this.lastUpdate.set(0);
+    this.resultsLimit.set(INITIAL_RESULTS_LIMIT);
     this.filters.set(DEFAULT_FILTERS);
   }
 
