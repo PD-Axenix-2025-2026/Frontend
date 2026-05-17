@@ -125,6 +125,7 @@ export class RouteFilters {
   constructor() {
     effect(() => {
       const filters = this.filters();
+      const hasExplicitMaxTransfers = filters !== null && 'maxTransfers' in filters;
 
       this.form.patchValue(
         {
@@ -133,7 +134,9 @@ export class RouteFilters {
             train: filters?.transportTypes?.includes('train') ?? false,
             bus: filters?.transportTypes?.includes('bus') ?? false,
           },
-          maxTransfers: filters?.maxTransfers ?? DEFAULT_MAX_TRANSFERS,
+          maxTransfers: hasExplicitMaxTransfers
+            ? (filters.maxTransfers ?? null)
+            : DEFAULT_MAX_TRANSFERS,
           maxPrice: filters?.maxPrice ?? this.baseFacets()?.price.max ?? null,
           maxDurationMinutes: filters?.maxDurationMinutes ?? this.baseFacets()?.duration_minutes.max ?? null,
         },
@@ -176,7 +179,7 @@ function toSearchFilters(value: RouteFiltersFormValue): SearchFilters {
 
   return {
     transportTypes: transportTypes.length > 0 ? transportTypes : undefined,
-    maxTransfers: value.maxTransfers ?? undefined,
+    maxTransfers: value.maxTransfers,
     maxPrice: value.maxPrice ?? undefined,
     maxDurationMinutes: value.maxDurationMinutes ?? undefined,
   };

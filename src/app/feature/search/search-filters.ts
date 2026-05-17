@@ -4,7 +4,9 @@ export function normalizeFilters(filters: SearchFilters): SearchFilters {
   return {
     transportTypes: normalizeTransportTypes(filters.transportTypes),
     maxPrice: filters.maxPrice ?? undefined,
-    maxTransfers: filters.maxTransfers ?? undefined,
+    maxTransfers: Object.hasOwn(filters, 'maxTransfers')
+      ? (filters.maxTransfers ?? null)
+      : undefined,
     maxDurationMinutes: filters.maxDurationMinutes ?? undefined,
   };
 }
