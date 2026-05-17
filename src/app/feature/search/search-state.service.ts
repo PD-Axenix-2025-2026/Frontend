@@ -11,6 +11,10 @@ import {
 import { EMPTY, Subject, Subscription, catchError, switchMap, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+const DEFAULT_FILTERS: SearchFilters = {
+  maxTransfers: 0,
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -36,7 +40,7 @@ export class SearchStateService {
 
   lastUpdate = signal(0);
   sort = signal<SearchSortOption>('best');
-  filters = signal<SearchFilters>({});
+  filters = signal<SearchFilters>(DEFAULT_FILTERS);
 
   constructor() {
     this.reloadResults$
@@ -151,6 +155,7 @@ export class SearchStateService {
     this.results.set(null);
     this.baseFacets.set(null);
     this.lastUpdate.set(0);
+    this.filters.set(DEFAULT_FILTERS);
   }
 
   private getErrorMessage(error: unknown): string {

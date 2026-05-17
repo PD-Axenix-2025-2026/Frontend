@@ -29,6 +29,8 @@ import {
 } from '../../core/api';
 import { differentLocationsValidator } from './search-form.validators';
 
+const DEFAULT_SEARCH_MAX_TRANSFERS = 1;
+
 @Component({
   selector: 'app-search-form',
   imports: [
@@ -112,6 +114,9 @@ export class SearchForm implements OnInit {
         type: destination.type,
       },
       date: this.toIsoDate(date),
+      preferences: {
+        max_transfers: DEFAULT_SEARCH_MAX_TRANSFERS,
+      },
     };
     this.searchSubmitted.emit(payload);
   }

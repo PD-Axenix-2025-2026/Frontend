@@ -4,6 +4,7 @@ import { RouteCardItem, RouteCardSegment } from './route-card';
 export function mapRouteToCard(route: RouteListItemResponse): RouteCardItem {
   const firstSegment = route.segments[0];
   const lastSegment = route.segments[route.segments.length - 1];
+  const totalPrice = route.summary.total_price;
 
   return {
     id: route.route_id,
@@ -15,8 +16,10 @@ export function mapRouteToCard(route: RouteListItemResponse): RouteCardItem {
     stops: formatTransfers(route.summary.transfers),
     arrivalTime: formatTime(route.summary.arrival_at),
     arrivalPlace: lastSegment.destination_label ?? '',
-    price: formatMoney(route.summary.total_price.amount, route.summary.total_price.currency),
-    priceLabel: 'за 1 пассажира',
+    price: totalPrice
+      ? formatMoney(totalPrice.amount, totalPrice.currency)
+      : 'Уточняется',
+    priceLabel: totalPrice ? 'за 1 пассажира' : 'требует уточнения',
     segments: route.segments.map(mapSegment),
   };
 }

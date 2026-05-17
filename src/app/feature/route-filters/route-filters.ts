@@ -39,6 +39,8 @@ const TRANSPORT_META: Array<{ value: TransportType; label: string; icon: string 
   { value: 'bus', label: 'Автобус', icon: 'bus.svg' },
 ];
 
+const DEFAULT_MAX_TRANSFERS = 0;
+
 
 @Component({
   selector: 'app-route-filters',
@@ -131,7 +133,7 @@ export class RouteFilters {
             train: filters?.transportTypes?.includes('train') ?? false,
             bus: filters?.transportTypes?.includes('bus') ?? false,
           },
-          maxTransfers: filters?.maxTransfers ?? null,
+          maxTransfers: filters?.maxTransfers ?? DEFAULT_MAX_TRANSFERS,
           maxPrice: filters?.maxPrice ?? this.baseFacets()?.price.max ?? null,
           maxDurationMinutes: filters?.maxDurationMinutes ?? this.baseFacets()?.duration_minutes.max ?? null,
         },
@@ -156,7 +158,7 @@ export class RouteFilters {
         train: false,
         bus: false,
       },
-      maxTransfers: null,
+      maxTransfers: DEFAULT_MAX_TRANSFERS,
       maxPrice: this.baseFacets()?.price.max ?? null,
       maxDurationMinutes: this.baseFacets()?.duration_minutes.max ?? null,
     });

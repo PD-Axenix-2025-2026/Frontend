@@ -18,7 +18,10 @@ export class SearchStats {
     const items = this.items();
     if (items.length === 0) return [];
 
-    const cheapest = minBy(items, (i) => i.summary.total_price.amount);
+    const pricedItems = items.filter((item) => item.summary.total_price !== null);
+    const cheapest = pricedItems.length > 0
+      ? minBy(pricedItems, (item) => item.summary.total_price?.amount ?? Number.POSITIVE_INFINITY)
+      : null;
 
     const fastest = minBy(items, (i) => i.summary.duration_minutes);
 
@@ -30,8 +33,10 @@ export class SearchStats {
       new Date(curr.summary.departure_at) > new Date(best.summary.departure_at) ? curr : best,
     );
 
-    return [
-      {
+    const stats: SearchStatItem[] = [];
+
+    if (cheapest?.summary.total_price) {
+      stats.push({
         id: 'cheapest',
         value: formatMoney(
           cheapest.summary.total_price.amount,
@@ -39,7 +44,10 @@ export class SearchStats {
         ),
         label: 'самый дешевый',
         routeId: cheapest.route_id,
-      },
+      });
+    }
+
+    stats.push(
       {
         id: 'fastest',
         value: formatDuration(fastest.summary.duration_minutes),
@@ -58,7 +66,9 @@ export class SearchStats {
         label: 'самый поздний',
         routeId: latest.route_id,
       },
-    ];
+    );
+
+    return stats;
   });
 
   protected onStatClick(item: SearchStatItem): void {

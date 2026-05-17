@@ -66,7 +66,7 @@ export interface RouteSummaryResponse {
   arrival_at: ISODateTime;
   duration_minutes: number;
   transfers: number;
-  total_price: MoneyResponse;
+  total_price: MoneyResponse | null;
 }
 
 export interface RouteSegmentResponse {
@@ -84,7 +84,7 @@ export interface RouteSegmentResponse {
   departure_at: ISODateTime;
   arrival_at: ISODateTime;
   duration_minutes: number;
-  price: MoneyResponse;
+  price: MoneyResponse | null;
   available_seats: number | null;
   source_system: string | null;
   source_record_id: string | null;
