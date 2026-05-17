@@ -136,7 +136,7 @@ export class SearchForm implements OnInit {
         return this.locationApi.listLocations({
           prefix: query,
           types: ["city"],
-          limit: 10
+          limit: 20
         }).pipe(
           map(response => response.items),
           catchError(() => of([]))
@@ -177,6 +177,10 @@ export class SearchForm implements OnInit {
       },
     },
     overlay: { class: 'search-control__overlay' },
+    listContainer: { class: 'search-control__list-container' },
+    list: { class: 'search-control__list' },
+    option: { class: 'search-control__option' },
+    emptyMessage: { class: 'search-control__empty-message' },
     loader: { class: 'search-control__loader' },
   };
 
@@ -189,6 +193,10 @@ export class SearchForm implements OnInit {
       },
     },
     overlay: { class: 'search-control__overlay' },
+    listContainer: { class: 'search-control__list-container' },
+    list: { class: 'search-control__list' },
+    option: { class: 'search-control__option' },
+    emptyMessage: { class: 'search-control__empty-message' },
     loader: { class: 'search-control__loader' },
   };
 

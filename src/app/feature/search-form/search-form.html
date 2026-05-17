@@ -10,7 +10,21 @@
         [forceSelection]="true"
         (completeMethod)="searchOrigins($event)"
         emptyMessage="Ничего не найдено"
-      ></p-autoComplete>
+      >
+        <ng-template let-location #item>
+          <div class="search-suggestion">
+            <div class="search-suggestion__main">
+              <span class="search-suggestion__label">{{ location.label }}</span>
+              @if (location.code) {
+                <span class="search-suggestion__code">{{ location.code }}</span>
+              }
+            </div>
+            @if (location.city_label && location.city_label !== location.label) {
+              <div class="search-suggestion__meta">{{ location.city_label }}</div>
+            }
+          </div>
+        </ng-template>
+      </p-autoComplete>
       <div class="search-field__messages">
         @if (isInvalid('origin')) {
           <small class="search-field__error">Выберите пункт отправления из списка</small>
@@ -28,7 +42,21 @@
         [forceSelection]="true"
         (completeMethod)="searchDestinations($event)"
         emptyMessage="Ничего не найдено"
-      ></p-autoComplete>
+      >
+        <ng-template let-location #item>
+          <div class="search-suggestion">
+            <div class="search-suggestion__main">
+              <span class="search-suggestion__label">{{ location.label }}</span>
+              @if (location.code) {
+                <span class="search-suggestion__code">{{ location.code }}</span>
+              }
+            </div>
+            @if (location.city_label && location.city_label !== location.label) {
+              <div class="search-suggestion__meta">{{ location.city_label }}</div>
+            }
+          </div>
+        </ng-template>
+      </p-autoComplete>
       <div class="search-field__messages">
         @if (isInvalid('destination')) {
           <small class="search-field__error">Выберите пункт прибытия из списка</small>
