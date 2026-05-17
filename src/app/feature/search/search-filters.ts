@@ -1,12 +1,12 @@
 import { SearchFilters, TransportType } from '../../core/api';
 
+const DEFAULT_MAX_TRANSFERS = 0;
+
 export function normalizeFilters(filters: SearchFilters): SearchFilters {
   return {
     transportTypes: normalizeTransportTypes(filters.transportTypes),
     maxPrice: filters.maxPrice ?? undefined,
-    maxTransfers: Object.hasOwn(filters, 'maxTransfers')
-      ? (filters.maxTransfers ?? null)
-      : undefined,
+    maxTransfers: normalizeMaxTransfers(filters.maxTransfers),
     maxDurationMinutes: filters.maxDurationMinutes ?? undefined,
   };
 }
@@ -16,11 +16,13 @@ function normalizeTransportTypes(value?: TransportType[]) : TransportType[] | un
 }
 
 export function hasActiveFilters(filters: SearchFilters): boolean {
+  const normalized = normalizeFilters(filters);
+
   return Boolean(
-    filters.transportTypes?.length ||
-    filters.maxPrice !== undefined ||
-    filters.maxTransfers !== undefined ||
-    filters.maxDurationMinutes !== undefined,
+    normalized.transportTypes?.length ||
+    normalized.maxPrice !== undefined ||
+    normalized.maxTransfers !== undefined ||
+    normalized.maxDurationMinutes !== undefined,
   );
 }
 
@@ -31,4 +33,12 @@ export function isSameFilters(a: SearchFilters, b: SearchFilters): boolean {
     (a.maxDurationMinutes ?? undefined) === (b.maxDurationMinutes ?? undefined) &&
     (a.transportTypes?.join(',') ?? '') === (b.transportTypes?.join(',') ?? '')
   );
+}
+
+function normalizeMaxTransfers(value?: number | null): number | undefined {
+  if (value == null || value === DEFAULT_MAX_TRANSFERS) {
+    return undefined;
+  }
+
+  return value;
 }

@@ -10,6 +10,7 @@ import {
 } from '../../core/api';
 import { EMPTY, Subject, Subscription, catchError, switchMap, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { hasActiveFilters, isSameFilters, normalizeFilters } from './search-filters';
 
 const DEFAULT_FILTERS: SearchFilters = {
   maxTransfers: 0,
@@ -131,7 +132,14 @@ export class SearchStateService {
   }
 
   updateFilters(filters: SearchFilters): void {
-    this.filters.set(filters);
+    const normalizedFilters = normalizeFilters(filters);
+    const currentFilters = normalizeFilters(this.filters());
+
+    if (isSameFilters(normalizedFilters, currentFilters)) {
+      return;
+    }
+
+    this.filters.set(normalizedFilters);
     this.reloadCurrentResults();
   }
 
@@ -180,13 +188,4 @@ export class SearchStateService {
     }
     return 'Не удалось выполнить поиск';
   }
-}
-
-function hasActiveFilters(filters: SearchFilters): boolean {
-  return Boolean(
-    filters.transportTypes?.length ||
-    filters.maxPrice !== undefined ||
-    filters.maxTransfers !== undefined ||
-    filters.maxDurationMinutes !== undefined,
-  );
 }
