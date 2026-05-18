@@ -601,6 +601,51 @@ a {
   font-size: 10px;
 }
 
+.route-filters__radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.route-filters__radio-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.route-filters__radio-box {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.route-filters__radio[data-p-checked='true'] .route-filters__radio-box,
+.route-filters__radio.p-radiobutton-checked .route-filters__radio-box {
+  border-color: var(--orange);
+}
+
+.route-filters__radio-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.route-filters__radio[data-p-checked='true'] .route-filters__radio-icon,
+.route-filters__radio.p-radiobutton-checked .route-filters__radio-icon {
+  background: var(--orange);
+}
+
 .route-filters__slider {
   position: relative;
   display: block;

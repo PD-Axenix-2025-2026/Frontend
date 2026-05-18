@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { hasActiveFilters, isSameFilters, normalizeFilters } from './search-filters';
 
 const DEFAULT_FILTERS: SearchFilters = {
-  maxTransfers: 0,
+  maxTransfers: 3,
 };
 const INITIAL_RESULTS_LIMIT = 6;
 const RESULTS_PAGE_STEP = 6;

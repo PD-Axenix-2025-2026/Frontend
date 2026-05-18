@@ -27,13 +27,12 @@
       <div class="route-filters__options">
         @for (option of transferOptions(); track $index) {
           <label class="route-filters__option">
-            <p-checkbox
-              [binary]="true"
-              [ngModel]="form.controls.maxTransfers.value === option.value"
-              (ngModelChange)="form.controls.maxTransfers.setValue($event ? option.value : null)"
-              [ngModelOptions]="{ standalone: true }"
-              [pt]="checkboxPt"
-            />
+            <p-radiobutton
+              [formControl]="form.controls.maxTransfers"
+              [inputId]="'transfer-' + option.value"
+              [name]="'maxTransfers'"
+              [value]="option.value"
+              [pt]="radioPt"/>
             <span class="route-filters__option-label">{{ option.label }}</span>
             @if (option.count !== undefined) {
               <span class="route-filters__count">{{ option.count }}</span>

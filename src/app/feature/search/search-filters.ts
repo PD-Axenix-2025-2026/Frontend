@@ -1,12 +1,14 @@
 import { SearchFilters, TransportType } from '../../core/api';
 
-const DEFAULT_MAX_TRANSFERS = 0;
+const DEFAULT_MAX_TRANSFERS = 3;
 
 export function normalizeFilters(filters: SearchFilters): SearchFilters {
+  const maxTransfers = normalizeMaxTransfers(filters.maxTransfers);
+
   return {
     transportTypes: normalizeTransportTypes(filters.transportTypes),
     maxPrice: filters.maxPrice ?? undefined,
-    maxTransfers: normalizeMaxTransfers(filters.maxTransfers),
+    ...(maxTransfers !== undefined ? { maxTransfers } : {}),
     maxDurationMinutes: filters.maxDurationMinutes ?? undefined,
   };
 }

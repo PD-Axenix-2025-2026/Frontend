@@ -29,7 +29,7 @@ import {
 } from '../../core/api';
 import { differentLocationsValidator } from './search-form.validators';
 
-const DEFAULT_SEARCH_MAX_TRANSFERS = 1;
+const DEFAULT_SEARCH_MAX_TRANSFERS = 3;
 
 @Component({
   selector: 'app-search-form',
